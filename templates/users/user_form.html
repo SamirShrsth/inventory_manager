@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}User{% endblock %}
+{% block content %}
+<h1 class="h3">{% if object %}Edit user{% else %}New user{% endif %}</h1>
+<form method="post">
+  {% csrf_token %}
+  {% include "includes/form.html" %}
+  <button class="btn btn-primary" type="submit">Save</button>
+  <a class="btn btn-link" href="{% url 'users:user-list' %}">Cancel</a>
+</form>
+{% endblock %}

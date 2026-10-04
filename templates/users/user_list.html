@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Users{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h1 class="h3">Users</h1>
+  <a class="btn btn-primary" href="{% url 'users:user-create' %}">New user</a>
+</div>
+<div class="table-responsive bg-white shadow-sm">
+<table class="table mb-0">
+  <thead><tr><th>Email</th><th>Name</th><th>Role</th><th>Active</th><th></th></tr></thead>
+  <tbody>
+  {% for u in object_list %}
+    <tr>
+      <td>{{ u.email }}</td>
+      <td>{{ u.profile.full_name }}</td>
+      <td>{{ u.get_role_display }}</td>
+      <td>{% if u.is_active %}Yes{% else %}No{% endif %}</td>
+      <td><a href="{% url 'users:user-update' u.pk %}">Edit</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% include "includes/pagination.html" %}
+{% endblock %}

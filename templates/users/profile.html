@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<h1 class="h3">Profile</h1>
+<p class="text-muted">{{ user.email }} · {{ user.get_role_display }}</p>
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="card"><div class="card-body">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% include "includes/form.html" %}
+        <button class="btn btn-primary" type="submit">Save profile</button>
+      </form>
+    </div></div>
+  </div>
+  <div class="col-lg-5">
+    <div class="card"><div class="card-body">
+      <h2 class="h5">Security</h2>
+      <a class="btn btn-outline-secondary" href="{% url 'users:password-change' %}">Change password</a>
+    </div></div>
+  </div>
+</div>
+{% endblock %}

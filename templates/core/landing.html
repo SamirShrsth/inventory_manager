@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Welcome · Inventory Manager{% endblock %}
+{% block content %}
+<section class="landing-hero mb-4">
+  <div class="hero-copy">
+    <p class="eyebrow">Warehouse operations</p>
+    <h1>Know what is in stock.</h1>
+    <p class="hero-lede">A straightforward place to manage products, warehouse balances, stock movements, and purchase orders.</p>
+    <div class="d-flex flex-wrap gap-2">
+      <a class="btn btn-primary" href="{% url 'users:login' %}">Sign in</a>
+      <a class="btn btn-outline-secondary" href="{% url 'users:register' %}">Create an account</a>
+    </div>
+  </div>
+  <div class="hero-note">
+    <span class="hero-note-label">Built for the floor</span>
+    <strong>Clear records.<br>Fewer surprises.</strong>
+    <span>Role-based access · PostgreSQL</span>
+  </div>
+</section>
+<section class="row g-3 landing-features">
+  <div class="col-md-4"><div class="card h-100"><div class="card-body">
+    <span class="feature-number">01</span>
+    <h2 class="h5">Stock control</h2>
+    <p class="mb-0">Receipts, issues, transfers, and adjustments update warehouse balances consistently.</p>
+  </div></div></div>
+  <div class="col-md-4"><div class="card h-100"><div class="card-body">
+    <span class="feature-number">02</span>
+    <h2 class="h5">Purchase orders</h2>
+    <p class="mb-0">Submit, receive, and cancel orders while keeping purchasing history close to stock.</p>
+  </div></div></div>
+  <div class="col-md-4"><div class="card h-100"><div class="card-body">
+    <span class="feature-number">03</span>
+    <h2 class="h5">Simple access</h2>
+    <p class="mb-0">Practical screens for teams, with role-based permissions and a JWT API when you need it.</p>
+  </div></div></div>
+</section>
+{% endblock %}

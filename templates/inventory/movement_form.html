@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}New movement{% endblock %}
+{% block content %}
+<h1 class="h3">Post stock movement</h1>
+<p class="text-muted">Posted movements cannot be edited. Use a reversing receipt or issue if you need a correction.</p>
+<form method="post" id="movement-form">
+  {% csrf_token %}
+  {% include "includes/form.html" %}
+  <h2 class="h5">Lines</h2>
+  {{ formset.management_form }}
+  {% if formset.non_form_errors %}<div class="alert alert-danger">{{ formset.non_form_errors }}</div>{% endif %}
+  <div id="formset-rows">
+    {% for f in formset %}
+      <div class="row g-2 align-items-end formset-row mb-2">
+        {% for field in f.visible_fields %}
+          <div class="col-md-3">
+            <label class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+          </div>
+        {% endfor %}
+        {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+  <button class="btn btn-primary" type="submit">Post movement</button>
+  <a class="btn btn-link" href="{% url 'inventory:movement-list' %}">Cancel</a>
+</form>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Warehouses{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h1 class="h3">Warehouses</h1>
+  {% if user.is_admin_role %}<a class="btn btn-primary" href="{% url 'inventory:warehouse-create' %}">New warehouse</a>{% endif %}
+</div>
+<table class="table bg-white">
+  <thead><tr><th>Code</th><th>Name</th><th>Active</th><th></th></tr></thead>
+  <tbody>
+  {% for w in object_list %}
+    <tr>
+      <td><a href="{% url 'inventory:warehouse-detail' w.pk %}">{{ w.code }}</a></td>
+      <td>{{ w.name }}</td>
+      <td>{{ w.is_active|yesno:"Yes,No" }}</td>
+      <td>{% if user.is_admin_role %}<a href="{% url 'inventory:warehouse-update' w.pk %}">Edit</a>{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% include "includes/pagination.html" %}
+{% endblock %}

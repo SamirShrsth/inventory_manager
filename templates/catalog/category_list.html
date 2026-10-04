@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Categories{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h1 class="h3">Categories</h1>
+  {% if user.can_mutate %}<a class="btn btn-primary" href="{% url 'catalog:category-create' %}">New category</a>{% endif %}
+</div>
+<table class="table bg-white">
+  <thead><tr><th>Name</th><th>Slug</th><th>Active</th><th></th></tr></thead>
+  <tbody>
+  {% for c in object_list %}
+    <tr>
+      <td>{{ c.name }}</td>
+      <td>{{ c.slug }}</td>
+      <td>{{ c.is_active|yesno:"Yes,No" }}</td>
+      <td>{% if user.can_mutate %}<a href="{% url 'catalog:category-update' c.pk %}">Edit</a>{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% include "includes/pagination.html" %}
+{% endblock %}

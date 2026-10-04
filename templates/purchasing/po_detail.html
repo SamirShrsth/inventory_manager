@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ object.number }}{% endblock %}
+{% block content %}
+<h1 class="h3">{{ object.number }}</h1>
+<p>{{ object.supplier }} → {{ object.warehouse }} · {{ object.get_status_display }}</p>
+{% if user.can_mutate and object.status == "draft" %}
+  <a class="btn btn-outline-primary mb-2" href="{% url 'purchasing:po-update' object.pk %}">Edit</a>
+  <form class="d-inline" method="post" action="{% url 'purchasing:po-action' object.pk 'submit' %}">{% csrf_token %}
+    <button class="btn btn-primary mb-2" type="submit">Submit</button>
+  </form>
+{% endif %}
+{% if user.can_mutate and object.status == "draft" or user.can_mutate and object.status == "submitted" %}
+  <form class="d-inline" method="post" action="{% url 'purchasing:po-action' object.pk 'cancel' %}">{% csrf_token %}
+    <button class="btn btn-outline-danger mb-2" type="submit">Cancel</button>
+  </form>
+{% endif %}
+
+<table class="table bg-white">
+  <thead><tr><th>Product</th><th>Ordered</th><th>Received</th><th>Remaining</th><th>Unit cost</th></tr></thead>
+  <tbody>
+  {% for line in object.lines.all %}
+    <tr>
+      <td>{{ line.product }}</td>
+      <td>{{ line.quantity_ordered }}</td>
+      <td>{{ line.quantity_received }}</td>
+      <td>{{ line.remaining }}</td>
+      <td>{{ line.unit_cost }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% if receive_form %}
+  <h2 class="h5">Receive goods</h2>
+  <form method="post" action="{% url 'purchasing:po-action' object.pk 'receive' %}">
+    {% csrf_token %}
+    {% include "includes/form.html" with form=receive_form %}
+    <button class="btn btn-success" type="submit">Receive</button>
+  </form>
+{% endif %}
+{% endblock %}

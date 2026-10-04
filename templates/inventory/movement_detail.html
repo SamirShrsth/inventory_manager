@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Movement {{ object.pk }}{% endblock %}
+{% block content %}
+<h1 class="h3">{{ object.get_movement_type_display }} #{{ object.pk }}</h1>
+<p>Warehouse {{ object.warehouse }} {% if object.destination_warehouse %}→ {{ object.destination_warehouse }}{% endif %}</p>
+<p>Posted {{ object.posted_at }} by {{ object.created_by.email }}</p>
+{% if object.reference %}<p>Reference: {{ object.reference }}</p>{% endif %}
+{% if object.notes %}<p>{{ object.notes }}</p>{% endif %}
+<table class="table bg-white">
+  <thead><tr><th>Product</th><th>Qty</th><th>Unit cost</th></tr></thead>
+  <tbody>
+  {% for line in object.lines.all %}
+    <tr><td>{{ line.product }}</td><td>{{ line.quantity }}</td><td>{{ line.unit_cost|default:"—" }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

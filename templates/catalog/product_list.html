@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Products{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h1 class="h3">Products</h1>
+  {% if user.can_mutate %}<a class="btn btn-primary" href="{% url 'catalog:product-create' %}">New product</a>{% endif %}
+</div>
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-4"><input class="form-control" name="q" value="{{ q }}" placeholder="Search SKU or name"></div>
+  <div class="col-md-3">
+    <select class="form-select" name="category">
+      <option value="">All categories</option>
+      {% for c in categories %}
+        <option value="{{ c.pk }}" {% if selected_category == c.pk|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select class="form-select" name="active">
+      <option value="">Any status</option>
+      <option value="1" {% if selected_active == "1" %}selected{% endif %}>Active</option>
+      <option value="0" {% if selected_active == "0" %}selected{% endif %}>Inactive</option>
+    </select>
+  </div>
+  <div class="col-md-3"><button class="btn btn-outline-secondary" type="submit">Filter</button></div>
+</form>
+<div class="table-responsive bg-white shadow-sm">
+<table class="table mb-0">
+  <thead><tr><th>SKU</th><th>Name</th><th>Category</th><th>On hand</th><th>Reorder</th><th></th></tr></thead>
+  <tbody>
+  {% for p in products %}
+    <tr>
+      <td><a href="{% url 'catalog:product-detail' p.pk %}">{{ p.sku }}</a></td>
+      <td>{{ p.name }}</td>
+      <td>{{ p.category.name }}</td>
+      <td>{{ p.on_hand|default:0 }}</td>
+      <td>{{ p.reorder_level }}</td>
+      <td>{% if user.can_mutate %}<a href="{% url 'catalog:product-update' p.pk %}">Edit</a>{% endif %}</td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="6" class="text-muted">No products found.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% include "includes/pagination.html" %}
+{% endblock %}

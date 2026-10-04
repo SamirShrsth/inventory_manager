@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Stock{% endblock %}
+{% block content %}
+<h1 class="h3">Stock balances</h1>
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-3"><input class="form-control" name="q" value="{{ q }}" placeholder="SKU or name"></div>
+  <div class="col-md-3">
+    <select class="form-select" name="warehouse">
+      <option value="">All warehouses</option>
+      {% for w in warehouses %}
+        <option value="{{ w.pk }}" {% if selected_warehouse == w.pk|stringformat:"s" %}selected{% endif %}>{{ w.code }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <select class="form-select" name="category">
+      <option value="">All categories</option>
+      {% for c in categories %}
+        <option value="{{ c.pk }}" {% if selected_category == c.pk|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2 form-check mt-2">
+    <input class="form-check-input" type="checkbox" name="low" value="1" id="low" {% if low == "1" %}checked{% endif %}>
+    <label class="form-check-label" for="low">Low stock</label>
+  </div>
+  <div class="col-md-1"><button class="btn btn-outline-secondary" type="submit">Go</button></div>
+</form>
+<table class="table bg-white">
+  <thead><tr><th>SKU</th><th>Product</th><th>Warehouse</th><th>Qty</th><th>Reorder</th></tr></thead>
+  <tbody>
+  {% for b in balances %}
+    <tr class="{% if b.quantity <= b.product.reorder_level %}table-warning{% endif %}">
+      <td>{{ b.product.sku }}</td>
+      <td><a href="{% url 'catalog:product-detail' b.product.pk %}">{{ b.product.name }}</a></td>
+      <td>{{ b.warehouse.code }}</td>
+      <td>{{ b.quantity }}</td>
+      <td>{{ b.product.reorder_level }}</td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="5" class="text-muted">No balances.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% include "includes/pagination.html" %}
+{% endblock %}

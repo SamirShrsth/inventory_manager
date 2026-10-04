@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ object.name }}{% endblock %}
+{% block content %}
+<h1 class="h3">{{ object.name }}</h1>
+<p class="text-muted">{{ object.sku }} · {{ object.category.name }} · {{ object.get_unit_display }}</p>
+<p>{{ object.description }}</p>
+{% if user.can_mutate %}<a class="btn btn-outline-primary mb-3" href="{% url 'catalog:product-update' object.pk %}">Edit</a>{% endif %}
+<h2 class="h5">Stock by warehouse</h2>
+<table class="table bg-white">
+  <thead><tr><th>Warehouse</th><th>Quantity</th></tr></thead>
+  <tbody>
+  {% for b in balances %}
+    <tr><td>{{ b.warehouse }}</td><td>{{ b.quantity }}</td></tr>
+  {% empty %}
+    <tr><td colspan="2" class="text-muted">No stock recorded.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+<h2 class="h5">Suppliers</h2>
+<ul>
+  {% for link in supplier_links %}
+    <li>{{ link.supplier }} {% if link.last_cost %}· last cost {{ link.last_cost }}{% endif %}</li>
+  {% empty %}
+    <li class="text-muted">No suppliers linked.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

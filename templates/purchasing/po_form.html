@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Purchase order{% endblock %}
+{% block content %}
+<h1 class="h3">{% if object %}Edit PO{% else %}New purchase order{% endif %}</h1>
+<form method="post">
+  {% csrf_token %}
+  {% include "includes/form.html" %}
+  <h2 class="h5">Lines</h2>
+  {{ formset.management_form }}
+  {% if formset.non_form_errors %}<div class="alert alert-danger">{{ formset.non_form_errors }}</div>{% endif %}
+  {% for f in formset %}
+    <div class="row g-2 mb-2">
+      {% for field in f.visible_fields %}
+        <div class="col-md-3">
+          <label class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+        </div>
+      {% endfor %}
+      {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
+    </div>
+  {% endfor %}
+  <button class="btn btn-primary" type="submit">Save</button>
+</form>
+{% endblock %}

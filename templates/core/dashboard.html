@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Overview</p>
+    <h1>Dashboard</h1>
+  </div>
+  <span class="page-date">{% now "l, j F Y" %}</span>
+</div>
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="card metric-card"><div class="card-body"><div class="metric-label">Active products</div><div class="metric-value">{{ product_count }}</div><div class="metric-rule"></div></div></div></div>
+  <div class="col-md-3"><div class="card metric-card"><div class="card-body"><div class="metric-label">Warehouses</div><div class="metric-value">{{ warehouse_count }}</div><div class="metric-rule"></div></div></div></div>
+  <div class="col-md-3"><div class="card metric-card"><div class="card-body"><div class="metric-label">Open POs</div><div class="metric-value">{{ open_po_count }}</div><div class="metric-rule"></div></div></div></div>
+  <div class="col-md-3"><div class="card metric-card"><div class="card-body"><div class="metric-label">Movements today</div><div class="metric-value">{{ movement_count }}</div><div class="metric-rule"></div></div></div></div>
+</div>
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header d-flex justify-content-between">Low stock <a href="{% url 'inventory:stock-list' %}?low=1">View all</a></div>
+      <div class="table-responsive">
+        <table class="table table-sm mb-0">
+          <thead><tr><th>SKU</th><th>Product</th><th>Warehouse</th><th>On hand</th><th>Reorder</th></tr></thead>
+          <tbody>
+          {% for row in low_stock %}
+            <tr><td>{{ row.product.sku }}</td><td>{{ row.product.name }}</td><td>{{ row.warehouse.code }}</td><td>{{ row.quantity }}</td><td>{{ row.product.reorder_level }}</td></tr>
+          {% empty %}
+            <tr><td colspan="5" class="text-muted">No low-stock items.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header">Recent movements</div>
+      <ul class="list-group list-group-flush">
+        {% for m in recent_movements %}
+        <li class="list-group-item d-flex justify-content-between">
+          <a href="{% url 'inventory:movement-detail' m.pk %}">{{ m.get_movement_type_display }} #{{ m.pk }}</a>
+          <span class="text-muted">{{ m.warehouse.code }} · {{ m.posted_at|date:"Y-m-d H:i" }}</span>
+        </li>
+        {% empty %}
+        <li class="list-group-item text-muted">No movements yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">Pending purchase orders</div>
+      <div class="table-responsive">
+        <table class="table mb-0">
+          <thead><tr><th>Number</th><th>Supplier</th><th>Warehouse</th><th>Status</th></tr></thead>
+          <tbody>
+          {% for po in pending_pos %}
+            <tr>
+              <td><a href="{% url 'purchasing:po-detail' po.pk %}">{{ po.number }}</a></td>
+              <td>{{ po.supplier.name }}</td>
+              <td>{{ po.warehouse.code }}</td>
+              <td>{{ po.get_status_display }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="4" class="text-muted">No open purchase orders.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

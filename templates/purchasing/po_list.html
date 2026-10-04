@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Purchase orders{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h1 class="h3">Purchase orders</h1>
+  {% if user.can_mutate %}<a class="btn btn-primary" href="{% url 'purchasing:po-create' %}">New PO</a>{% endif %}
+</div>
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-4"><input class="form-control" name="q" value="{{ q }}" placeholder="Number or supplier"></div>
+  <div class="col-md-3">
+    <select class="form-select" name="status">
+      <option value="">All statuses</option>
+      {% for value, label in statuses %}
+        <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2"><button class="btn btn-outline-secondary" type="submit">Filter</button></div>
+</form>
+<table class="table bg-white">
+  <thead><tr><th>Number</th><th>Supplier</th><th>Warehouse</th><th>Status</th><th>Created</th></tr></thead>
+  <tbody>
+  {% for po in object_list %}
+    <tr>
+      <td><a href="{% url 'purchasing:po-detail' po.pk %}">{{ po.number }}</a></td>
+      <td>{{ po.supplier.name }}</td>
+      <td>{{ po.warehouse.code }}</td>
+      <td>{{ po.get_status_display }}</td>
+      <td>{{ po.created_at|date:"Y-m-d" }}</td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="5" class="text-muted">No purchase orders.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% include "includes/pagination.html" %}
+{% endblock %}

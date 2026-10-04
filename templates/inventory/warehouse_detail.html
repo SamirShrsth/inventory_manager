@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ object.name }}{% endblock %}
+{% block content %}
+<h1 class="h3">{{ object }}</h1>
+<p>{{ object.address }}</p>
+<table class="table bg-white">
+  <thead><tr><th>Product</th><th>Qty</th></tr></thead>
+  <tbody>
+  {% for b in balances %}
+    <tr><td>{{ b.product }}</td><td>{{ b.quantity }}</td></tr>
+  {% empty %}
+    <tr><td colspan="2" class="text-muted">Empty warehouse.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Movements{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h1 class="h3">Stock movements</h1>
+  {% if user.can_mutate %}<a class="btn btn-primary" href="{% url 'inventory:movement-create' %}">New movement</a>{% endif %}
+</div>
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-3"><input class="form-control" name="q" value="{{ q }}" placeholder="Reference, notes, SKU"></div>
+  <div class="col-md-3">
+    <select class="form-select" name="type">
+      <option value="">All types</option>
+      {% for value, label in types %}
+        <option value="{{ value }}" {% if selected_type == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <select class="form-select" name="warehouse">
+      <option value="">All warehouses</option>
+      {% for w in warehouses %}
+        <option value="{{ w.pk }}" {% if selected_warehouse == w.pk|stringformat:"s" %}selected{% endif %}>{{ w.code }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3"><button class="btn btn-outline-secondary" type="submit">Filter</button></div>
+</form>
+<table class="table bg-white">
+  <thead><tr><th>#</th><th>Type</th><th>Warehouse</th><th>Dest</th><th>When</th><th>By</th></tr></thead>
+  <tbody>
+  {% for m in object_list %}
+    <tr>
+      <td><a href="{% url 'inventory:movement-detail' m.pk %}">{{ m.pk }}</a></td>
+      <td>{{ m.get_movement_type_display }}</td>
+      <td>{{ m.warehouse.code }}</td>
+      <td>{{ m.destination_warehouse.code|default:"—" }}</td>
+      <td>{{ m.posted_at|date:"Y-m-d H:i" }}</td>
+      <td>{{ m.created_by.email }}</td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="6" class="text-muted">No movements.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% include "includes/pagination.html" %}
+{% endblock %}
